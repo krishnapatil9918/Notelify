@@ -1,0 +1,28 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+virtualenv/
+venv/
+ENV/
+
+# Local database files
+*.db
+
+# Secrets and credentials
+client_secret.json
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+*.log
+
+*.sqlite3

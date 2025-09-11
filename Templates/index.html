@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Notelify</title>
+  <!-- ✅ Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Gradient background layers */
+    body {
+      background:
+        radial-gradient(1200px 800px at 120% -20%, rgba(37,99,235,0.08), transparent),
+        radial-gradient(1000px 700px at -10% 120%, rgba(16,185,129,0.08), transparent);
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-900">
+  
+  <!-- Logout -->
+  <a href="/logout" 
+     class="logout-btn fixed top-5 right-5 bg-red-600 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg hover:bg-red-700 active:translate-y-[1px] transition">
+    Logout
+  </a>
+
+  <div class="container max-w-5xl mx-auto px-5 py-12">
+    
+    <!-- Header -->
+    <header class="flex items-center justify-center gap-3 mb-6">
+      <div class="logo w-9 h-9 rounded-lg grid place-items-center font-bold text-white shadow-md bg-gradient-to-br from-blue-600 to-green-600">
+        N
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-wide">Notelify</h1>
+    </header>
+
+    <!-- Add Note -->
+    <section class="card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-5 mb-6">
+      <h2 id="add-note-heading" class="sr-only">Add a note</h2>
+      <form method="POST" action="/add" class="flex flex-col gap-4">
+        
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Title</label>
+          <input class="input w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent shadow-sm focus:ring-4 focus:ring-blue-400 focus:border-blue-500 outline-none transition"
+                 type="text" id="title" name="title" placeholder="e.g., Grocery list" required maxlength="120" />
+        </div>
+
+        <div>
+          <label for="content" class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Content</label>
+          <textarea class="textarea w-full min-h-[120px] px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent shadow-sm resize-y focus:ring-4 focus:ring-blue-400 focus:border-blue-500 outline-none transition"
+                    id="content" name="content" placeholder="Write your note..." required maxlength="5000"></textarea>
+        </div>
+
+        <div class="row-inline flex justify-end">
+          <button class="btn px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 active:translate-y-[1px] focus:ring-4 focus:ring-blue-400 transition"
+                  type="submit">
+            Add Note
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Notes List -->
+    <div class="notes-head flex items-center justify-between mb-4 px-1">
+      <h2 class="text-gray-500 dark:text-gray-400 font-semibold text-base">All Notes</h2>
+    </div>
+
+    <section class="notes-grid grid gap-4 grid-cols-[repeat(auto-fill,minmax(240px,1fr))]" aria-live="polite" aria-label="Saved notes">
+      {% for note in result %}
+      <article class="card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 flex flex-col gap-2">
+        <h3 class="note-title text-lg font-semibold leading-snug break-words">{{ note[1] }}</h3>
+        <p class="note-content text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words">{{ note[2] }}</p>
+
+        <!-- Actions -->
+        <div class="note-actions flex gap-2 mt-2">
+          <!-- Edit -->
+          <form method="GET" action="/edit/{{ note[0] }}">
+            <button type="submit" class="btn px-3 py-1.5 text-sm rounded-md bg-blue-600 text-white shadow-md hover:bg-blue-700 transition">
+              Edit
+            </button>
+          </form>
+
+          <!-- Delete -->
+          <form method="POST" action="{{ url_for('note_deleter', id=note[0]) }}" 
+                onsubmit="return confirm('Are you sure you want to delete this note?');">
+            <button type="submit" class="btn px-3 py-1.5 text-sm rounded-md bg-red-600 text-white shadow-md hover:bg-red-700 transition">
+              Delete
+            </button>
+          </form>
+        </div>
+      </article>
+      {% else %}
+      <div class="empty card bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-center p-6 text-gray-500 dark:text-gray-400">
+        No notes yet. Add your first one above!
+      </div>
+      {% endfor %}
+    </section>
+
+  </div>
+</body>
+</html>

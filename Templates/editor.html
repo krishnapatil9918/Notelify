@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Note</title>
+  <!-- ✅ Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animated gradient background */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    body {
+      background: linear-gradient(135deg, #6366f1, #3b82f6, #06b6d4);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center h-screen text-gray-800 font-sans m-0">
+  <div class="container w-[480px] bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-white/50 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
+    <h1 class="text-2xl font-extrabold text-center mb-6 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent tracking-wide">
+      Edit Note
+    </h1>
+
+    <form method="POST" action="{{ url_for('note_editor', id=note[0]) }}">
+      <label for="title" class="block mb-2 text-sm font-semibold text-gray-700">Title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="{{ note[1] }}"
+        required
+        maxlength="120"
+        class="w-full px-4 py-3 mb-5 rounded-xl border border-gray-300 bg-white/70 text-gray-900 placeholder-gray-400 shadow-inner focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition"
+      >
+
+      <label for="content" class="block mb-2 text-sm font-semibold text-gray-700">Content</label>
+      <textarea
+        id="content"
+        name="content"
+        required
+        maxlength="5000"
+        class="w-full min-h-[150px] px-4 py-3 mb-6 rounded-xl border border-gray-300 bg-white/70 text-gray-900 placeholder-gray-400 shadow-inner resize-y focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition"
+      >{{ note[2] }}</textarea>
+
+      <div class="btn-group flex justify-center">
+        <button
+          type="submit"
+          class="btn btn-save min-w-[160px] px-6 py-3 text-white font-bold rounded-xl shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-800 hover:to-cyan-600 transition-all duration-300 active:translate-y-[1px]"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
