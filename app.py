@@ -1,16 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, make_response
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
-import os
-import random
-import logging
-import pathlib, requests, cachecontrol
+import random, string, os, logging, pathlib, requests, cachecontrol, datetime
 from google_auth_oauthlib.flow import Flow
 import google.auth.transport.requests
 from google.oauth2 import id_token
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-import datetime
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import set_access_cookies
 from dotenv import load_dotenv
@@ -161,17 +157,9 @@ def verify_otp():
             session.pop('email', None)
             
             access_token = create_access_token(identity=email)
-
-            
-            if request.is_json:  
-                return jsonify(access_token=access_token)
-        
-            else:  
-                print("JWT created:", access_token)
-                return redirect(url_for('login'))
-        else:
-            flash("Invalid OTP. Try again.")
-            return redirect(url_for('verify_otp'))
+            response = make_response(redirect('/login'))
+            set_access_cookies(response, access_token)
+            return response
 
     return render_template('otp.html')
 
@@ -207,12 +195,11 @@ def loginuser():
 
     access_token = create_access_token(identity=db_email)
 
-    if request.is_json:
-        return jsonify(access_token=access_token)
-    else:  
-        print("JWT created:", access_token) 
-        return redirect('/homepage')
-    
+    response = make_response(redirect('/homepage'))  
+    set_access_cookies(response, access_token)        
+    return response
+
+
 @app.route('/googlelogin')
 def googlelogin():
     authorization_url, state = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="select_account")
@@ -250,9 +237,11 @@ def callback():
     if existing_user:
         userid = existing_user[0]
     else:
+        digits = string.digits
+        password = ''.join(random.choices(digits, k=6))
         c.execute(
             "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-            (session["name"], session["email"], "google_oauth_user")
+            (session["name"], session["email"], password)
         )
         conn.commit()
         userid = c.lastrowid
@@ -283,7 +272,6 @@ def reset():
 @app.route('/reset_processing', methods=['POST'])
 def reset_password():
     email = request.form['email']
-    current_password = request.form['current_password']
     new_password = request.form['new_password']
     confirm_password = request.form['confirm_password']
 
@@ -295,15 +283,10 @@ def reset_password():
     if not c:
         print("User found!")
         return redirect('/reset') 
-
-    database_password = c[1]
-
-    if not check_password_hash(database_password, current_password):
-        print("right current password")
-        return redirect('/reset')
+    
 
     if new_password != confirm_password:
-        print("Password match")
+        print("Password do not match")
         return redirect('/reset')
 
     hashed_new_password = generate_password_hash(new_password)
