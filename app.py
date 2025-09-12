@@ -192,7 +192,6 @@ def loginuser():
     session['email'] = db_email
 
     access_token = create_access_token(identity=db_email)
-
     response = make_response(redirect('/homepage'))  
     set_access_cookies(response, access_token)        
     return response
