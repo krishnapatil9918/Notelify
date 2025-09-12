@@ -6,55 +6,61 @@
   <!-- ✅ Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Animated gradient background */
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    body {
-      background: linear-gradient(135deg, #6366f1, #3b82f6, #06b6d4);
-      background-size: 400% 400%;
-      animation: gradientShift 12s ease infinite;
+    .animate-fadeIn {
+      animation: fadeIn 0.8s ease-in-out;
     }
   </style>
 </head>
-<body class="flex items-center justify-center h-screen text-gray-800 font-sans m-0">
-  <div class="container w-[480px] bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-white/50 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
-    <h1 class="text-2xl font-extrabold text-center mb-6 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent tracking-wide">
+<body class="flex items-center justify-center h-screen font-sans bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-gray-800">
+
+  <div class="container w-[450px] bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl animate-fadeIn">
+    <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">
       Edit Note
     </h1>
 
-    <form method="POST" action="{{ url_for('note_editor', id=note[0]) }}">
-      <label for="title" class="block mb-2 text-sm font-semibold text-gray-700">Title</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        value="{{ note[1] }}"
-        required
-        maxlength="120"
-        class="w-full px-4 py-3 mb-5 rounded-xl border border-gray-300 bg-white/70 text-gray-900 placeholder-gray-400 shadow-inner focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition"
-      >
+    <form method="POST" action="{{ url_for('note_editor', id=note[0]) }}" class="space-y-4">
+      
+      <!-- Title -->
+      <div>
+        <label for="title" class="block mb-1 text-sm font-semibold text-gray-700">Title</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="{{ note[1] }}"
+          required
+          maxlength="120"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-300 outline-none transition"
+        >
+      </div>
 
-      <label for="content" class="block mb-2 text-sm font-semibold text-gray-700">Content</label>
-      <textarea
-        id="content"
-        name="content"
-        required
-        maxlength="5000"
-        class="w-full min-h-[150px] px-4 py-3 mb-6 rounded-xl border border-gray-300 bg-white/70 text-gray-900 placeholder-gray-400 shadow-inner resize-y focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition"
-      >{{ note[2] }}</textarea>
+      <!-- Content -->
+      <div>
+        <label for="content" class="block mb-1 text-sm font-semibold text-gray-700">Content</label>
+        <textarea
+          id="content"
+          name="content"
+          required
+          maxlength="5000"
+          class="w-full min-h-[150px] px-3 py-2 border border-gray-300 rounded-md text-sm shadow-sm bg-white resize-y focus:border-blue-500 focus:ring-4 focus:ring-blue-300 outline-none transition"
+        >{{ note[2] }}</textarea>
+      </div>
 
-      <div class="btn-group flex justify-center">
+      <!-- Save Button -->
+      <div class="flex justify-center">
         <button
           type="submit"
-          class="btn btn-save min-w-[160px] px-6 py-3 text-white font-bold rounded-xl shadow-lg bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-800 hover:to-cyan-600 transition-all duration-300 active:translate-y-[1px]"
+          class="w-full py-3 rounded-md font-semibold text-white bg-blue-600 shadow-md hover:bg-blue-700 active:translate-y-[1px] transition"
         >
           Save Changes
         </button>
       </div>
     </form>
   </div>
+
 </body>
 </html>

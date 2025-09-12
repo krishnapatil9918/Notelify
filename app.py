@@ -6,9 +6,7 @@ import random, string, os, logging, pathlib, requests, cachecontrol, datetime
 from google_auth_oauthlib.flow import Flow
 import google.auth.transport.requests
 from google.oauth2 import id_token
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies, create_access_token,set_access_cookies
 from dotenv import load_dotenv
 
 
@@ -66,7 +64,7 @@ written.execute('''CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
+    password TEXT,
     otp TEXT,
     is_verified INTEGER DEFAULT 0
 );''')
@@ -237,8 +235,9 @@ def callback():
     if existing_user:
         userid = existing_user[0]
     else:
-        digits = string.digits
-        password = ''.join(random.choices(digits, k=6))
+        # digits = string.digits
+        # password = ''.join(random.choices(digits, k=6))
+        password = None
         c.execute(
             "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
             (session["name"], session["email"], password)
