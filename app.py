@@ -399,6 +399,9 @@ def note_editor(id):
     except Exception as a:
          print("Error:", a)
 
+@app.route("/healthz")
+def health():
+    return "ok", 200
 
 if __name__ == '__main__':   
  app.run(debug = True)
