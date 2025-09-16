@@ -45,11 +45,10 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
-redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI")
 
 flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file, 
                                      scopes= ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-                                       redirect_uri=redirect_uri
+                                     redirect_uri = "http://127.0.0.1:5000/callback"
                                      )
 
 def get_db():
