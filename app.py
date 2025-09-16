@@ -48,7 +48,7 @@ client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret
 
 flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file, 
                                      scopes= ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-                                     redirect_uri = "http://127.0.0.1:5000/callback"
+                                     redirect_uri=os.environ.get("OAUTH_REDIRECT_URI", "http://127.0.0.1:5000/callback")
                                      )
 
 def get_db():
@@ -403,8 +403,9 @@ def note_editor(id):
 def health():
     return "ok", 200
 
-if __name__ == '__main__':   
- app.run(debug = True)
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
  
  
  
