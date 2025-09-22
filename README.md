@@ -2,8 +2,7 @@
 
 🌐 Live Demo: [Notelify](https://notelify-6n5e.onrender.com/)
 
-Notelify is a secure, modern **Flask-based note-taking app** with multiple authentication methods, email verification, and JWT-protected sessions.  
-Users can **register, login (via email or Google), verify via OTP, and manage notes** safely with SQLite as the database backend.  
+Notelify is a secure, modern **Flask-based note-taking app** with multiple authentication methods, email verification, and JWT-protected sessions. Users can **register, login (via email or Google), verify via OTP, and manage notes** safely with SQLite as the database backend.  
 
 ---
 
