@@ -25,7 +25,7 @@ app.secret_key = os.environ.get("SECRET_KEY")
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'   # Mail server
 app.config['MAIL_PORT'] = 587                 # Port for TLS
 app.config['MAIL_USE_TLS'] = True             # Enable TLS
-app.config['MAIL_USE_SSL'] = False            # SSL usually uses 465
+app.config['MAIL_USE_SSL'] = False          # SSL usually uses 465
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = ( "flasknoteapp", os.environ.get('MAIL_USERNAME') )
@@ -34,7 +34,7 @@ app.config['MAIL_DEFAULT_SENDER'] = ( "flasknoteapp", os.environ.get('MAIL_USERN
 app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY") # can be same or different
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=9)
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_COOKIE_SECURE"] = False  # True if HTTPS
+app.config["JWT_COOKIE_SECURE"] = True  # True if HTTPS
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 jwt = JWTManager(app)
