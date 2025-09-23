@@ -341,7 +341,7 @@ def note_adder():
         note_reciever.close()
         return redirect('/homepage')
     except Exception as a:
-        return "error"
+        return a
     
     
 # this is the note_deleter function helps to delete the specific note from noteapp
