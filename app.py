@@ -113,13 +113,15 @@ def register():
             )
             user.commit()
             session['email'] = email
+            msg = Message(
+                subject="Notelify OTP",
+                recipients=[email],
+                body=f"Hello {name},\n\nYour OTP code is {num}. It will expire in 5 minutes."
+            )
+
             try:
-                msg = Message(
-                    subject="Notelify OTP",
-                    recipients=[email],
-                    body=f"Hello {name},\n\nYour OTP code is {num}. It will expire in 5 minutes."
-                )
-                mail.send(msg)  # this uses the Gmail SMTP now
+                with mail.connect() as conn:
+                    conn.send(msg)
                 flash("Registered! Please check your email for the OTP.")
                 return redirect(url_for('verify_otp'))
 
