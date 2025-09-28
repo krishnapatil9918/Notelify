@@ -22,10 +22,10 @@ app.jinja_env.auto_reload = True
 app.secret_key = os.environ.get("SECRET_KEY")
 
 # Configuration for Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'   # Mail server
-app.config['MAIL_PORT'] = 587                 # Port for TLS
-app.config['MAIL_USE_TLS'] = True             # Enable TLS
-app.config['MAIL_USE_SSL'] = False          # SSL usually uses 465
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL') == 'True'
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = ( "flasknoteapp", os.environ.get('MAIL_USERNAME') )
@@ -97,7 +97,6 @@ def register():
         password = request.form['password']
         hashpassword = generate_password_hash(password)
 
-        user = sqlite3.connect("notes.db")
         user = get_db()
         user_connecting = user.cursor()
         user_connecting.execute("select email from users where email=?",(email,))
@@ -114,15 +113,20 @@ def register():
             )
             user.commit()
             session['email'] = email
-            msg = Message(
-                subject="Notelify OTP",
-                recipients=[email],
-                body=f"Hello {name},\n\nYour OTP code is {num}. It will expire in 5 minutes."
-            )
-            mail.send(msg)
+            try:
+                msg = Message(
+                    subject="Notelify OTP",
+                    recipients=[email],
+                    body=f"Hello {name},\n\nYour OTP code is {num}. It will expire in 5 minutes."
+                )
+                mail.send(msg)  # this uses the Gmail SMTP now
+                flash("Registered! Please check your email for the OTP.")
+                return redirect(url_for('verify_otp'))
 
-            flash("Registered! Please check your Gmail for the OTP.")
-            return redirect(url_for('verify_otp'))
+            except Exception as e:
+                flash("Failed to send OTP. Please try again.")
+                print("Email sending error:", e)
+                return redirect(url_for('register'))
 
         except Exception as e:
             flash("Email already exists or error occurred.")
