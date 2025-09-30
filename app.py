@@ -22,10 +22,10 @@ app.jinja_env.auto_reload = True
 app.secret_key = os.environ.get("SECRET_KEY")
 
 # Configuration for Flask-Mail
-app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
-app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
-app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS') == 'True'
-app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL') == 'True'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'   # Mail server
+app.config['MAIL_PORT'] = 587                 # Port for TLS
+app.config['MAIL_USE_TLS'] = True             # Enable TLS
+app.config['MAIL_USE_SSL'] = False          # SSL usually uses 465
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = ( "flasknoteapp", os.environ.get('MAIL_USERNAME') )
