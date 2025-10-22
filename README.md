@@ -25,8 +25,13 @@ Notelify is a secure, modern **Flask-based note-taking app** with multiple authe
   - Cascade deletion on user removal  
 
 - 📧 **Email Integration**
-  - Gmail SMTP support for sending OTP codes  
-  - Configurable with environment variables  
+  - Send OTP verification emails via **Brevo API** (recommended for production)
+  - Optional Gmail SMTP support for development/testing
+  - Fully configurable via environment variables
+  
+- 🌐 **Deployment**
+  - Live on [Render](https://notelify-6n5e.onrender.com/)
+  - Can be deployed for free using Render etc.
 
 - ⚡ **Tech Stack**
   - Backend: Flask
@@ -34,4 +39,19 @@ Notelify is a secure, modern **Flask-based note-taking app** with multiple authe
   - Auth: JWT + Google OAuth  
   - Database: SQLite  
   - Email: Flask-Mail
+
+### ⚙️ Environment Variables
+| Variable | Description |
+|----------|-------------|
+| SECRET_KEY | Flask session secret |
+| JWT_SECRET_KEY | Secret for JWT signing |
+| MAIL_USERNAME | Email address for SMTP (optional) |
+| MAIL_PASSWORD | SMTP password or app password (optional) |
+| BREVO_API_KEY | Brevo API key for sending OTP emails |
+| GOOGLE_CLIENT_ID | Google OAuth client ID |
+| CLIENT_SECRET | Google OAuth client secret |
+| OAUTH_REDIRECT_URI | OAuth redirect URI (must match Google console) |
+
+
+
 
