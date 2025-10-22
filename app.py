@@ -51,6 +51,23 @@ flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file,
                                       redirect_uri=redirect_uri
                                      )
 
+def send_brevo_email(to_email, subject, html_content):
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": os.environ.get("BREVO_API_KEY"),
+        "content-type": "application/json"
+    }
+    payload = {
+        "sender": {"name": "FlaskNoteApp", "email": "krishnapatil9918@gmail.com"},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "htmlContent": html_content
+    }
+    response = requests.post(url, headers=headers, json=payload)
+    print("Brevo API response:", response.status_code, response.text)
+    return response.status_code in [200, 201]
+
 def get_db():
     conn = sqlite3.connect("notes.db")
     conn.execute("PRAGMA foreign_keys = ON")
@@ -113,21 +130,31 @@ def register():
             )
             user.commit()
             session['email'] = email
-            msg = Message(
-                subject="Notelify OTP",
-                recipients=[email],
-                body=f"Hello {name},\n\nYour OTP code is {num}. It will expire in 5 minutes."
-            )
+            # msg = Message(
+            #     subject="Notelify OTP",
+            #     recipients=[email],
+            #     body=f"Hello {name},\n\nYour OTP code is {num}. It will expire in 5 minutes."
+            # )
+            html_content = f"""
+            <p>Hello {name},</p>
+            <p>Your OTP code is <strong>{num}</strong>.</p>
+            <p>It will expire in 5 minutes.</p>
+            """
+            # try:
+            #     with mail.connect() as conn:
+            #         conn.send(msg)
+            #     flash("Registered! Please check your email for the OTP.")
+            #     return redirect(url_for('verify_otp'))
 
-            try:
-                with mail.connect() as conn:
-                    conn.send(msg)
+            # except Exception as e:
+            #     flash("Failed to send OTP. Please try again.")
+            #     print("Email sending error:", e)
+            #     return redirect(url_for('register'))
+            if send_brevo_email(email, "Notelify OTP", html_content):
                 flash("Registered! Please check your email for the OTP.")
                 return redirect(url_for('verify_otp'))
-
-            except Exception as e:
-                flash("Failed to send OTP. Please try again.")
-                print("Email sending error:", e)
+            else:
+                flash("Failed to send OTP email. Please try again later.")
                 return redirect(url_for('register'))
 
         except Exception as e:
